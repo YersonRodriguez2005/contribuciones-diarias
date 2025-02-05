@@ -1,0 +1,26 @@
+name: Contribución Diaria
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Esto ejecuta la acción todos los días a medianoche
+  workflow_dispatch:  # Esto permite ejecutar manualmente la acción si es necesario
+
+jobs:
+  contribucion:
+    runs-on: ubuntu-latest  # Se ejecutará en un entorno Linux, puedes cambiarlo por 'windows-latest' si prefieres Windows.
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3  # Este paso clona tu repositorio en el entorno de acción.
+    
+    - name: Set up Git
+      run: |
+        git config --global user.name "Tu Nombre"
+        git config --global user.email "tu_email@example.com"
+
+    - name: Add daily contribution
+      run: |
+        echo "Contribución diaria $(date)" >> contribucion.txt
+        git add contribucion.txt
+        git commit -m "Contribución diaria $(date)"
+        git push origin main
