@@ -7,20 +7,17 @@ on:
 
 jobs:
   contribucion:
-    runs-on: ubuntu-latest  # Se ejecutará en un entorno Linux, puedes cambiarlo por 'windows-latest' si prefieres Windows.
+    runs-on: ubuntu-latest  # Se ejecutará en un entorno Linux
 
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v3  # Este paso clona tu repositorio en el entorno de acción.
-    
-    - name: Set up Git
-      run: |
-        git config --global user.name "Tu Nombre"
-        git config --global user.email "tu_email@example.com"
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-    - name: Add daily contribution
+    - name: Contribución diaria
       run: |
         echo "Contribución diaria $(date)" >> contribucion.txt
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add contribucion.txt
         git commit -m "Contribución diaria $(date)"
-        git push origin main
+        git push https://github-actions:${{ secrets.GH_TOKEN }}@github.com/YersonRodriguez2005/contribuciones-diarias.git HEAD:main
