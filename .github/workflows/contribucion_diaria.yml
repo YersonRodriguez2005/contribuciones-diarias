@@ -1,0 +1,23 @@
+name: Contribución Diaria
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Esto ejecuta la acción todos los días a medianoche
+  workflow_dispatch:  # Esto permite ejecutar manualmente la acción si es necesario
+
+jobs:
+  contribucion:
+    runs-on: ubuntu-latest  # Se ejecutará en un entorno Linux
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Contribución diaria
+      run: |
+        echo "Contribución diaria $(date)" >> contribucion.txt
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add contribucion.txt
+        git commit -m "Contribución diaria $(date)"
+        git push https://github-actions:${{ secrets.GH_TOKEN }}@github.com/YersonRodriguez2005/contribuciones-diarias.git HEAD:main
