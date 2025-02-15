@@ -31,7 +31,10 @@ jobs:
         run: echo "Contribución diaria $DATE" >> contribucion.txt
 
       - name: Hacer commit y push
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git add contribucion.txt
           git commit -m "Contribución diaria $DATE" || echo "Sin cambios para commitear"
-          git push origin main
+          git push https://x-access-token:${GH_PAT}@github.com/YersonRodriguez2005/contribuciones-diarias.git main
+
