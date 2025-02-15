@@ -2,9 +2,11 @@ name: Commit Automático Diario
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Se ejecuta todos los días a las 12:00 UTC
+    - cron: '0 12 * * *'  # Ejecuta cada día a las 12:00 UTC
+  workflow_dispatch:  # Permite ejecución manual
 
-  workflow_dispatch: # Permite ejecutarlo manualmente desde la pestaña "Actions"
+permissions: 
+  contents: write  # Habilita permisos de escritura en el repositorio
 
 jobs:
   auto-commit:
@@ -13,6 +15,8 @@ jobs:
     steps:
       - name: Clonar el repositorio
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configurar usuario de Git
         run: |
@@ -26,10 +30,8 @@ jobs:
       - name: Agregar contribución
         run: echo "Contribución diaria $DATE" >> contribucion.txt
 
-            - name: Hacer commit y push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Hacer commit y push
         run: |
           git add contribucion.txt
           git commit -m "Contribución diaria $DATE" || echo "Sin cambios para commitear"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/YERSON/contribuciones-diarias.git main
+          git push origin main
