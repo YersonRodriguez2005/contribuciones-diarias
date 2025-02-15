@@ -1,1 +1,1 @@
-# contribuciones-diarias
+Contribución diaria
