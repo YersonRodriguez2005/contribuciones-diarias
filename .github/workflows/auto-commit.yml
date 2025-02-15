@@ -25,7 +25,7 @@ jobs:
 
       - name: Obtener la fecha actual
         id: date
-        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+        run: echo "DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
       - name: Hacer pull para evitar conflictos
         run: |
@@ -36,9 +36,13 @@ jobs:
 
       - name: Hacer commit y push
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add contribucion.txt
-          git commit -m "Contribución diaria $DATE" || echo "Sin cambios para commitear"
-          git push https://x-access-token:${GH_PAT}@github.com/YersonRodriguez2005/contribuciones-diarias.git main
-
+          git commit -m "Contribución diaria $DATE" --allow-empty
+          git push origin main
+          
+      - name: Verificar cambios en GitHub
+        run: |
+          git fetch --all
+          git log -n 5 --oneline
