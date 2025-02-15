@@ -27,10 +27,6 @@ jobs:
         id: date
         run: echo "DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
-      - name: Hacer pull para evitar conflictos
-        run: |
-          git pull origin main --rebase
-
       - name: Agregar contribución
         run: echo "Contribución diaria $DATE" >> contribucion.txt
 
@@ -40,6 +36,7 @@ jobs:
         run: |
           git add contribucion.txt
           git commit -m "Contribución diaria $DATE" --allow-empty
+          git pull origin main --rebase
           git push origin main
           
       - name: Verificar cambios en GitHub
