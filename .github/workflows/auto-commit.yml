@@ -26,8 +26,10 @@ jobs:
       - name: Agregar contribución
         run: echo "Contribución diaria $DATE" >> contribucion.txt
 
-      - name: Hacer commit y push
+            - name: Hacer commit y push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git add contribucion.txt
           git commit -m "Contribución diaria $DATE" || echo "Sin cambios para commitear"
-          git push origin main
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/YERSON/contribuciones-diarias.git main
