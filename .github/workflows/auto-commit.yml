@@ -5,8 +5,8 @@ on:
     - cron: '0 12 * * *'  # Ejecuta cada día a las 12:00 UTC
   workflow_dispatch:  # Permite ejecución manual
 
-permissions: 
-  contents: write  # Habilita permisos de escritura en el repositorio
+permissions:
+  contents: write
 
 jobs:
   auto-commit:
@@ -15,31 +15,17 @@ jobs:
     steps:
       - name: Clonar el repositorio
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Configurar usuario de Git
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Obtener la fecha actual
-        id: date
-        run: echo "DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
-
       - name: Agregar contribución
-        run: echo "Contribución diaria $DATE" >> contribucion.txt
+        run: echo "Contribución automática $(date)" >> contribucion.txt
 
       - name: Hacer commit y push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git add contribucion.txt
-          git commit -m "Contribución diaria $DATE" --allow-empty
-          git pull origin main --rebase
-          git push origin main
-          
-      - name: Verificar cambios en GitHub
-        run: |
-          git fetch --all
-          git log -n 5 --oneline
+          git commit -m "Contribución automática $(date)" || echo "Sin cambios"
+          git push
