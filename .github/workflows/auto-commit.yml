@@ -2,11 +2,11 @@ name: Commit Automático Diario
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Ejecuta cada día a las 12:00 UTC
+    - cron: '0 12 * * *'  # Se ejecuta todos los días a las 12:00 UTC
   workflow_dispatch:  # Permite ejecución manual
 
 permissions:
-  contents: write
+  contents: write  # Da permisos de escritura en el repositorio
 
 jobs:
   auto-commit:
@@ -15,17 +15,32 @@ jobs:
     steps:
       - name: Clonar el repositorio
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # Trae todo el historial para evitar problemas con commits
 
       - name: Configurar usuario de Git
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Agregar contribución
-        run: echo "Contribución automática $(date)" >> contribucion.txt
+      - name: Obtener la fecha actual
+        id: date
+        run: echo "DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
+      - name: Asegurar cambios en contribucion.txt
+        run: |
+          echo "Contribución diaria $DATE" >> contribucion.txt
+          cat contribucion.txt  # Verifica que el archivo realmente cambia
 
       - name: Hacer commit y push
         run: |
           git add contribucion.txt
-          git commit -m "Contribución automática $(date)" || echo "Sin cambios"
-          git push
+          git commit -m "Contribución automática $DATE" --allow-empty
+          git pull origin main --rebase || echo "No hay cambios remotos"
+          git push origin main
+          
+      - name: Verificar que el commit se refleje
+        run: |
+          git fetch --all
+          git log -n 5 --oneline
