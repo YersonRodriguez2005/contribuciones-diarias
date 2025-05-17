@@ -12,3 +12,4 @@ echo Contribución diaria %fecha% >> contribucion.txt
 git add contribucion.txt
 git commit -m "Contribución diaria %fecha%"
 git push origin main
+S
